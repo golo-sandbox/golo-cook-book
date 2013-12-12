@@ -3,18 +3,9 @@ module observer
 function Observable = {
   let observers = list[]
 
-  let isUpdatable = |object| {
-    let properties = object: properties(): filter(|property|-> property: getKey(): equals("update"))
-    if properties: size(): equals(1) {
-      return isClosure(properties :iterator(): next(): getValue())
-    } else {
-      return false
-    }
-  }     
-
   let _observable_ = DynamicObject()
     : define("attach", |this, observer| {    
-        if isUpdatable(observer) {
+        if observer: hasMethod("update") {
           observer: subject(this)
           observers: add(observer)
         } else {
@@ -35,35 +26,26 @@ function Observable = {
 
 function Observer = {
 
-  let isImplemented = |method, object| {
-    let properties = object: properties(): filter(|property|-> property: getKey(): equals(method))
-    if properties: size(): equals(1) {
-      return isClosure(properties :iterator(): next(): getValue())
-    } else {
-      return false
-    }    
-  }
-
   let isObservable = |object| {
-    return isImplemented("attach", object) and isImplemented("notify", object) 
+    return object: hasMethod("attach") and object: hasMethod("notify") 
   }  
 
   let _observer_ = DynamicObject()
-    : define("update", |this| -> raise("update not implemented"))
-    : define("observe", |this, subject| {
-        if isObservable(subject) {
-          subject: attach(this)
-        } else {
-          raise("oops i did it again")
-        }
-      })
-    : define("forget", |this, subject| {
-        if isObservable(subject) {
-          subject: detach(this)
-        } else {
-          raise("oops i did it again")
-        }    
-      })
+  : define("update", |this| -> raise("update not implemented"))
+  : define("observe", |this, subject| {
+      if isObservable(subject) {
+        subject: attach(this)
+      } else {
+        raise("oops i did it again")
+      }
+    })
+  :define("forget", |this, subject| {
+      if isObservable(subject) {
+        subject: detach(this)
+      } else {
+        raise("oops i did it again")
+      }    
+    })
   return _observer_
 } 
 
@@ -124,5 +106,10 @@ function main = |args| {
   august: forget(peter)
 
   peter: start(2)
+
+  let toto = DynamicObject():define("hello",|this|{return 4})
+
+  println(toto: hasMethod("hello"))
+  println(toto: hasMethod("salut"))
 
 }
