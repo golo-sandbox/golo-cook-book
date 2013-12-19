@@ -1,21 +1,22 @@
 module contract
 
-function contract = |description, from| ->
-  DynamicObject()
-    : define("requires", |this, predicate| {
-        if predicate is false { raise("["+from+"] contract : \""+description+"\" is not respected!") }
-      })
+#import cop
+import tools
 
-function hello = |message| {
-  contract("message must be a string and not null", "hello")
-    : requires(message isnt null and message oftype java.lang.String.class)
-    
-  println("HELLO " + message)
+function salut = |message| {
+  require(
+      message isnt null and message oftype java.lang.String.class
+    , "message must be a string and not null"
+  )
+  
+  println("SALUT " + message) 
 }
 
 function main = |args| {
+
+  #salut(null)
   hello("bob")
   hello(12)     # --> exception / stops the program
-  hello(null)   # --> exception
+  #hello(null)   # --> exception
 }
 
