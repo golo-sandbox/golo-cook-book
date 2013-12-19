@@ -1,1 +1,6 @@
-#wip
+module dyno
+
+function main = |args| {
+  
+
+}
