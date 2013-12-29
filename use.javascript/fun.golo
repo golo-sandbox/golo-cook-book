@@ -34,10 +34,31 @@ function main = |args| {
     }
   """
   )
-  
+
   # invoke the global functions named "add" then "multiply"
   println(engine: invokeFunction("add", 10, 25))
   println(engine: invokeFunction("multiply", 10, 25))
+
+  # evaluate obj
+  engine: eval(
+  """
+    var bob = {
+      firstName : "Bob",
+      lastName : "Morane",
+      sayHello : function() {
+        return "Hello " + this.firstName + " " + this.lastName;
+      }
+    }
+  """
+  )
+
+  let bob = engine: get("bob")
+
+  println(bob)
+  println(bob: get("firstName") + " " + bob: get("lastName"))
+
+  println(engine: invokeMethod(bob, "sayHello"))
+
 }
 
 
