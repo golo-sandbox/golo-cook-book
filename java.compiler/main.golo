@@ -14,5 +14,16 @@ function main = |args| {
   println(bob: firstName() + " " + bob: lastName())
   println(bob: toString())
 
+  #let conf = map[
+  #  ["extends", "org.k33g.Human"],
+  #  ["overrides", map[
+  #    ["toString", |super, this| {
+  #      return super(this)
+  #    }]
+  #  ]]
+  #]
+  #let h = AdapterFabric(): maker(conf): newInstance()
+
+
 }
 
